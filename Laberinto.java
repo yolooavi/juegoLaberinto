@@ -9,6 +9,7 @@ public abstract class Laberinto extends JFrame {
     protected final int[][] laberinto;
     protected final boolean[][] visible;
     protected int jugadorX, jugadorY;
+    protected int movimientosJugador;
 
     public Laberinto(int tamano, int tamanoCuadro) {
         this.tamano = tamano;
@@ -17,19 +18,14 @@ public abstract class Laberinto extends JFrame {
         this.visible = new boolean[tamano][tamano];
         this.jugadorX = 1;
         this.jugadorY = 0;
+        this.movimientosJugador = 0;
 
         setSize(tamano * tamanoCuadro + 20, tamano * tamanoCuadro + 40);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         setVisible(true);
 
-        try {
-            generarLaberinto();
-        } catch (Exception e) {
-            System.out.println("Error al generar el laberinto: " + e.getMessage());
-            e.printStackTrace();
-        }
-        
+        generarLaberinto();
         actualizarVisibilidad();
 
         JPanel panel = new JPanel() {
@@ -72,21 +68,26 @@ public abstract class Laberinto extends JFrame {
         add(panel);
         addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent e) {
-                try {
-                    moverJugador(e);
-                    panel.repaint();
-                    if (jugadorX == tamano - 2 && jugadorY == tamano - 1) {
-                        JOptionPane.showMessageDialog(null, "¡Felicidades! Has ganado.");
-                        dispose();
+                moverJugador(e);
+                panel.repaint();
+                if (jugadorX == tamano - 2 && jugadorY == tamano - 1) {
+                    int movimientosMinimos = 20;
+
+                    if (movimientosJugador < movimientosMinimos) {
+                        JOptionPane.showMessageDialog(null, "¡Felicidades! Has ganado. Has tardado menos de " + movimientosMinimos + " movimientos.");
+                    } else if (movimientosJugador == movimientosMinimos) {
+                        JOptionPane.showMessageDialog(null, "¡Felicidades! Has ganado con el número mínimo de movimientos.");
+                    } else {
+                        JOptionPane.showMessageDialog(null, "¡Felicidades! Has ganado en " + movimientosJugador + " movimientos.");
                     }
-                } catch (IllegalArgumentException ex) {
-                    System.out.println("Error en el movimiento del jugador: " + ex.getMessage());
+
+                    dispose();
                 }
             }
         });
     }
 
-    protected abstract void generarLaberinto() throws Exception;
+    protected abstract void generarLaberinto();
 
     protected void moverJugador(KeyEvent e) {
         int newX = jugadorX;
@@ -101,6 +102,7 @@ public abstract class Laberinto extends JFrame {
         if (isColision(newX, newY)) {
             jugadorX = newX;
             jugadorY = newY;
+            movimientosJugador++;
             actualizarVisibilidad();
         } else {
             throw new IllegalArgumentException("Intento de mover fuera del área permitida");
