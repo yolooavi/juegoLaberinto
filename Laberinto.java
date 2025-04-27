@@ -58,7 +58,6 @@ public abstract class Laberinto extends JFrame {
                     int metaY = (tamano - 1) * tamanoCuadro;
             
                     g.setColor(new Color(173, 216, 230));
-                    
                     g.fillRect(metaX, metaY, tamanoCuadro, tamanoCuadro);
                 }
             }
@@ -73,6 +72,7 @@ public abstract class Laberinto extends JFrame {
                     JOptionPane.showMessageDialog(null, "¡Felicidades! Has ganado.");
                     dispose();
                 }
+                System.out.println("Tecla presionada: " + KeyEvent.getKeyText(e.getKeyCode()));
             }
         });
     }
