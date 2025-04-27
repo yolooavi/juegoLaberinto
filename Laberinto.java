@@ -29,26 +29,40 @@ public abstract class Laberinto extends JFrame {
         JPanel panel = new JPanel() {
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
+        
+                g.setColor(new Color(10, 10, 30)); 
+                g.fillRect(0, 0, getWidth(), getHeight());
+        
                 for (int y = 0; y < tamano; y++) {
                     for (int x = 0; x < tamano; x++) {
                         if (visible[y][x]) {
                             if (laberinto[y][x] == 1) {
-                                g.setColor(Color.BLACK);
+                                g.setColor(new Color(50, 50, 60)); 
                                 g.fillRect(x * tamanoCuadro, y * tamanoCuadro, tamanoCuadro, tamanoCuadro);
                             } else {
-                                g.setColor(Color.WHITE);
+                                g.setColor(new Color(20, 30, 60)); 
                                 g.fillRect(x * tamanoCuadro, y * tamanoCuadro, tamanoCuadro, tamanoCuadro);
                             }
                         } else {
-                            g.setColor(Color.DARK_GRAY);
+                            g.setColor(new Color(10, 10, 20)); 
                             g.fillRect(x * tamanoCuadro, y * tamanoCuadro, tamanoCuadro, tamanoCuadro);
                         }
                     }
                 }
-                g.setColor(Color.RED);
+        
+                g.setColor(new Color(100, 150, 255));
                 g.fillOval(jugadorX * tamanoCuadro + 5, jugadorY * tamanoCuadro + 5, tamanoCuadro - 10, tamanoCuadro - 10);
+
+                if (visible[tamano - 1][tamano - 2]) {
+                    int metaX = (tamano - 2) * tamanoCuadro;
+                    int metaY = (tamano - 1) * tamanoCuadro;
+            
+                    g.setColor(new Color(173, 216, 230));
+                    
+                    g.fillRect(metaX, metaY, tamanoCuadro, tamanoCuadro);
+                }
             }
-        };
+        }; 
 
         add(panel);
         addKeyListener(new KeyAdapter() {
@@ -84,7 +98,7 @@ public abstract class Laberinto extends JFrame {
     protected void actualizarVisibilidad() {
         for (int y = 0; y < tamano; y++)
             Arrays.fill(visible[y], false);
-
+    
         for (int dy = -2; dy <= 2; dy++) {
             for (int dx = -2; dx <= 2; dx++) {
                 int nx = jugadorX + dx;
@@ -94,5 +108,7 @@ public abstract class Laberinto extends JFrame {
                 }
             }
         }
+    
+        visible[tamano - 1][tamano - 2] = true;
     }
 }
