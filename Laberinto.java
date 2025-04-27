@@ -23,7 +23,13 @@ public abstract class Laberinto extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
 
-        generarLaberinto();
+        try {
+            generarLaberinto();
+        } catch (Exception e) {
+            System.out.println("Error al generar el laberinto: " + e.getMessage());
+            e.printStackTrace();
+        }
+        
         actualizarVisibilidad();
 
         JPanel panel = new JPanel() {
@@ -66,18 +72,21 @@ public abstract class Laberinto extends JFrame {
         add(panel);
         addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent e) {
-                moverJugador(e);
-                panel.repaint();
-                if (jugadorX == tamano - 2 && jugadorY == tamano - 1) {
-                    JOptionPane.showMessageDialog(null, "¡Felicidades! Has ganado.");
-                    dispose();
+                try {
+                    moverJugador(e);
+                    panel.repaint();
+                    if (jugadorX == tamano - 2 && jugadorY == tamano - 1) {
+                        JOptionPane.showMessageDialog(null, "¡Felicidades! Has ganado.");
+                        dispose();
+                    }
+                } catch (IllegalArgumentException ex) {
+                    System.out.println("Error en el movimiento del jugador: " + ex.getMessage());
                 }
-                System.out.println("Tecla presionada: " + KeyEvent.getKeyText(e.getKeyCode()));
             }
         });
     }
 
-    protected abstract void generarLaberinto();
+    protected abstract void generarLaberinto() throws Exception;
 
     protected void moverJugador(KeyEvent e) {
         int newX = jugadorX;
@@ -87,11 +96,14 @@ public abstract class Laberinto extends JFrame {
             case KeyEvent.VK_DOWN: newY++; break;
             case KeyEvent.VK_LEFT: newX--; break;
             case KeyEvent.VK_RIGHT: newX++; break;
+            default: throw new IllegalArgumentException("Tecla no válida para mover al jugador");
         }
         if (isColision(newX, newY)) {
             jugadorX = newX;
             jugadorY = newY;
             actualizarVisibilidad();
+        } else {
+            throw new IllegalArgumentException("Intento de mover fuera del área permitida");
         }
     }
 
