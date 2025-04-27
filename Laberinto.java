@@ -88,11 +88,18 @@ public abstract class Laberinto extends JFrame {
             case KeyEvent.VK_LEFT: newX--; break;
             case KeyEvent.VK_RIGHT: newX++; break;
         }
-        if (laberinto[newY][newX] == 0) {
+        if (isColision(newX, newY)) {
             jugadorX = newX;
             jugadorY = newY;
             actualizarVisibilidad();
         }
+    }
+
+    protected boolean isColision(int x, int y) {
+        if (x < 0 || y < 0 || x >= tamano || y >= tamano || laberinto[y][x] == 1) {
+            return false;
+        }
+        return true;
     }
 
     protected void actualizarVisibilidad() {

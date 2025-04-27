@@ -49,10 +49,7 @@ public class LaberintoFacil extends Laberinto {
         for (int i = 0; i < 20; i++) {
             int x = 1 + 2 * rand.nextInt((tamano - 2) / 2);
             int y = 1 + 2 * rand.nextInt((tamano - 2) / 2);
-            List<Point> direcciones = Arrays.asList(
-                new Point(0, -1), new Point(0, 1),
-                new Point(-1, 0), new Point(1, 0)
-            );
+            List<Point> direcciones = Arrays.asList(new Point(0, -1), new Point(0, 1), new Point(-1, 0), new Point(1, 0));
             Collections.shuffle(direcciones);
             for (Point d : direcciones) {
                 int nx = x + d.x;
