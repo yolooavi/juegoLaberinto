@@ -2,6 +2,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public abstract class Laberinto extends JFrame {
     protected final int tamano;
@@ -10,13 +13,15 @@ public abstract class Laberinto extends JFrame {
     protected final boolean[][] visible;
     protected int jugadorX, jugadorY;
     protected int movimientosJugador;
+    protected String nivel;
     private int segundos = 0;
-private JLabel labelTiempo;
-private boolean juegoTerminado = false;
+    private JLabel labelTiempo;
+    private boolean juegoTerminado = false;
 
-    public Laberinto(int tamano, int tamanoCuadro) {
+    public Laberinto(int tamano, int tamanoCuadro, String nivel) {
         this.tamano = tamano;
         this.tamanoCuadro = tamanoCuadro;
+        this.nivel = nivel;
         this.laberinto = new int[tamano][tamano];
         this.visible = new boolean[tamano][tamano];
         this.jugadorX = 1;
@@ -93,9 +98,12 @@ private boolean juegoTerminado = false;
                 moverJugador(e);
                 panel.repaint();
                 if (jugadorX == tamano - 2 && jugadorY == tamano - 1) {
+                    int tiempoFinal = segundos;
                     int movimientosMinimos = 20;
                     juegoTerminado = true;
-
+                
+                    guardarResultado(tiempoFinal, movimientosJugador);
+                
                     if (movimientosJugador < movimientosMinimos) {
                         JOptionPane.showMessageDialog(null, "¡Felicidades! Has ganado. Has tardado menos de " + movimientosMinimos + " movimientos.");
                     } else if (movimientosJugador == movimientosMinimos) {
@@ -103,12 +111,22 @@ private boolean juegoTerminado = false;
                     } else {
                         JOptionPane.showMessageDialog(null, "¡Felicidades! Has ganado en " + movimientosJugador + " movimientos.");
                     }
-
+                
                     dispose();
                 }
+                
             }
         });
     }
+
+    private void guardarResultado(int tiempo, int movimientos) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("resultados.txt", true))) {
+            writer.write("Nivel: " + nivel + ", Tiempo: " + tiempo + "s, Movimientos: " + movimientos);
+            writer.newLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }    
 
     protected abstract void generarLaberinto();
 

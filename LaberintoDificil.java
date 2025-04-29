@@ -4,7 +4,7 @@ import java.util.List;
 
 public class LaberintoDificil extends Laberinto {
     public LaberintoDificil() {
-        super(40, 20);
+        super(40, 20, "Difícil");
         setTitle("Laberinto - Difícil");
     }
 
