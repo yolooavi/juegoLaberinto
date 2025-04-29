@@ -10,6 +10,9 @@ public abstract class Laberinto extends JFrame {
     protected final boolean[][] visible;
     protected int jugadorX, jugadorY;
     protected int movimientosJugador;
+    private int segundos = 0;
+private JLabel labelTiempo;
+private boolean juegoTerminado = false;
 
     public Laberinto(int tamano, int tamanoCuadro) {
         this.tamano = tamano;
@@ -24,6 +27,25 @@ public abstract class Laberinto extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         setVisible(true);
+
+        labelTiempo = new JLabel("Tiempo: 0s");
+        labelTiempo.setForeground(Color.WHITE);
+        labelTiempo.setBackground(Color.BLACK);
+        labelTiempo.setOpaque(true); 
+        labelTiempo.setFont(new Font("Arial", Font.BOLD, 18));
+        labelTiempo.setHorizontalAlignment(SwingConstants.CENTER);
+        add(labelTiempo, BorderLayout.NORTH);
+
+        Thread cronometro = new Thread(() -> {
+            while (!juegoTerminado) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ignored) {}
+                segundos++;
+                SwingUtilities.invokeLater(() -> labelTiempo.setText("Tiempo: " + segundos + "s"));
+            }
+        });
+        cronometro.start();
 
         generarLaberinto();
         actualizarVisibilidad();
@@ -72,6 +94,7 @@ public abstract class Laberinto extends JFrame {
                 panel.repaint();
                 if (jugadorX == tamano - 2 && jugadorY == tamano - 1) {
                     int movimientosMinimos = 20;
+                    juegoTerminado = true;
 
                     if (movimientosJugador < movimientosMinimos) {
                         JOptionPane.showMessageDialog(null, "¡Felicidades! Has ganado. Has tardado menos de " + movimientosMinimos + " movimientos.");
